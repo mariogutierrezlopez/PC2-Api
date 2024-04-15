@@ -1,6 +1,17 @@
 <?php
 
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\JugadorController;
+use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\JornadaController;
+use App\Http\Controllers\JugadoresPosesionController;
+use App\Http\Controllers\UsuarioController;
 
-Route::get('/jugadores', [Controller::class, 'getJugadores']);
+
+// Rutas para la gestión
+Route::apiResource('jugadores', JugadorController::class);
+Route::apiResource('equipos', EquipoController::class);
+Route::apiResource('jornadas', JornadaController::class);
+Route::apiResource('jugadores_en_posesion', JugadoresPosesionController::class);
+Route::apiResource('usuarios', UsuarioController::class);
