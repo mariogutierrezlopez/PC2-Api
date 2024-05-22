@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JugadorController;
@@ -15,3 +16,5 @@ Route::apiResource('equipos', EquipoController::class);
 Route::apiResource('jornadas', JornadaController::class);
 Route::apiResource('jugadores_en_posesion', JugadoresPosesionController::class);
 Route::apiResource('usuarios', UsuarioController::class);
+
+Route::post('auth/login', [AuthController::class, 'login']);

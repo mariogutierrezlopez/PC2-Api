@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Usuario extends Model
+class Usuario extends Model implements JWTSubject
 {
     use HasFactory;
 
@@ -43,4 +44,12 @@ class Usuario extends Model
     }
 
     protected $dates = ['fecha_nacimiento'];
+
+    public function getJWTIdentifier(){
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(){
+        return [];
+    }
 }
