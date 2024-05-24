@@ -7,6 +7,7 @@ use App\Http\Controllers\JugadorController;
 use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\JugadoresPosesionController;
+use App\Http\Controllers\SoporteTecnicoController;
 use App\Http\Controllers\UsuarioController;
 
 
@@ -16,5 +17,8 @@ Route::apiResource('equipos', EquipoController::class);
 Route::apiResource('jornadas', JornadaController::class);
 Route::apiResource('jugadores_en_posesion', JugadoresPosesionController::class);
 Route::apiResource('usuarios', UsuarioController::class);
+
+Route::post('soporte_tecnico', [SoporteTecnicoController::class, 'store']);
+Route::get('soporte_tecnico', [SoporteTecnicoController::class, 'index']);
 
 Route::post('auth/login', [AuthController::class, 'login']);
