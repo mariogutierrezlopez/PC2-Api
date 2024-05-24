@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\SoporteTecnicoResource;
 use App\Models\SoporteTecnico;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 
 class SoporteTecnicoController extends Controller{
@@ -25,5 +26,30 @@ class SoporteTecnicoController extends Controller{
             });
 
         return response()->json($soportes);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'correo' => 'required',
+            'problema' => 'required',
+            'descripcion' => 'required',
+        ]);
+
+        // Verificar si el correo electrónico existe en la tabla de usuarios
+        $usuario = Usuario::where('correo', $request->correo)->first();
+
+        if (!$usuario) {
+            return response()->json(['message' => 'Tu correo no está registrado en CactusPanda'], 404);
+        }
+
+        $soporteId = SoporteTecnico::insertGetId([
+            'correo' => $request->correo,
+            'problema' => $request->problema,
+            'descripcion' => $request->descripcion,
+            'fecha_mensaje' => now(),
+        ]);
+
+        return response()->json(['message' => 'Solicitud de soporte técnico creada con éxito'], 201);
     }
 }
