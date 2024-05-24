@@ -17,6 +17,11 @@ class Usuario extends Model implements JWTSubject
     const CREATED_AT = 'fecha_creacion';
     const UPDATED_AT = null;
 
+    public function soporteTecnico()
+    {
+        return $this->hasMany(SoporteTecnico::class, 'correo', 'correo');
+    }
+    
     //TABLAS
     protected $fillable = [
         'nombre_de_usuario', 
