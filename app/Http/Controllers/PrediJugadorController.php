@@ -21,7 +21,7 @@ class PrediJugadorController extends Controller
                             ->get()
                             ->map(function($predijugador) {
                                 return [
-                                    'id_jugador' => $predijugador->id_jugador,
+                                    'id_jugador' => $predijugador->jugador->id_web,
                                     'jornada' => $predijugador->jornada,
                                     'puntos_jornada' => $predijugador->puntos_jornada,
                                     'nombre_del_jugador' => $predijugador->jugador->nombre_del_jugador,
