@@ -14,6 +14,13 @@ class JugadorController extends Controller
         return JugadorResource::collection(Jugador::all());
     }
 
+    public function rankingJugadores()
+    {
+        $jugadores = Jugador::all()->sortByDesc('puntos');
+
+        return response()->json($jugadores);
+    }
+
     // Crear un nuevo jugador
     public function store(Request $request)
     {

@@ -29,5 +29,10 @@ class Jugador extends Model
     {
         return $this->belongsTo(Equipo::class, 'id_equipo');
     }
+
+    public function predijugadores()
+    {
+        return $this->hasMany(Predijugador::class, 'id_jugador');
+    }
 }
 
