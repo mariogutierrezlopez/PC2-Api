@@ -7,17 +7,29 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(){
-        $credentials = request(['correo', 'pass']);
+    public function login(Request $request)
+    {
+        // Validar los datos recibidos
+        $request->validate([
+            'correo' => 'required|string',
+            'pass' => 'required|string',
+        ]);
 
-        if(! $token = auth('api')->attempt($credentials)){
+        // Credenciales de autenticación
+        $credentials = [
+            'correo' => $request->input('correo'),
+            'password' => $request->input('pass'),
+        ];
+
+        // Intentar autenticar al usuario
+        if (!$token = Auth::guard('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
+            'expires_in' => Auth::guard('api')->factory()->getTTL() * 60,
         ]);
     }
 }

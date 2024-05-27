@@ -24,3 +24,6 @@ Route::get('soporte_tecnico', [SoporteTecnicoController::class, 'index']);
 Route::get('ranking-jugadores', [PrediJugadorController::class, 'topJugadores']);
 
 Route::post('auth/login', [AuthController::class, 'login']);
+Route::group(['middleware' => 'auth:api'], function() {
+    Route::get('datos_usuario', [UsuarioController::class, 'getUserIdFromToken']);
+});
