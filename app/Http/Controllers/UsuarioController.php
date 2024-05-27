@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Usuario; // Asegúrate de que el modelo Usuario corresponde a tu tabla.
 use App\Http\Resources\UsuariosResource;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UsuarioController extends Controller
 {
@@ -72,5 +73,19 @@ class UsuarioController extends Controller
 
         // Devuelve un código de respuesta HTTP 204 - No Content.
         return response()->json(null, 204);
+    }
+
+    public function getUserIdFromToken()
+    {
+        // Obtener el usuario autenticado
+        $user = JWTAuth::parseToken()->authenticate();
+
+        // Obtener el id del usuario desde los claims del token
+        $userId = JWTAuth::parseToken()->getPayload()->get('user_id');
+
+        return response()->json([
+            'user_id' => $userId,
+            'user' => $user,
+        ]);
     }
 }

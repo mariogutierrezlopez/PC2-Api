@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Usuario extends Model implements JWTSubject
+class Usuario extends Authenticatable implements JWTSubject
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     public $timestamps = false;
 
@@ -21,8 +22,8 @@ class Usuario extends Model implements JWTSubject
     {
         return $this->hasMany(SoporteTecnico::class, 'correo', 'correo');
     }
-    
-    //TABLAS
+
+    // TABLAS
     protected $fillable = [
         'nombre_de_usuario', 
         'nombre_mister', 
@@ -32,7 +33,7 @@ class Usuario extends Model implements JWTSubject
         'fecha_nacimiento', 
     ];
 
-// Si deseas ocultar datos sensibles cuando se convierte el modelo a array o JSON
+    // Si deseas ocultar datos sensibles cuando se convierte el modelo a array o JSON
     protected $hidden = [
         'pass',
         'pass_mister',
@@ -50,11 +51,20 @@ class Usuario extends Model implements JWTSubject
 
     protected $dates = ['fecha_nacimiento'];
 
-    public function getJWTIdentifier(){
+    public function getAuthPassword()
+    {
+        return $this->pass;
+    }
+
+    public function getJWTIdentifier()
+    {
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims(){
-        return [];
+    public function getJWTCustomClaims()
+    {
+        return [
+            'user_id' => $this->id,
+        ];
     }
 }
