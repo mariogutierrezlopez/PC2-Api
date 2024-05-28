@@ -6,7 +6,7 @@ use App\Models\Usuario; // Asegúrate de que el modelo Usuario corresponde a tu 
 use App\Http\Resources\UsuariosResource;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
-
+use Illuminate\Support\Facades\Hash;
 class UsuarioController extends Controller
 {
     public function index()
@@ -88,4 +88,52 @@ class UsuarioController extends Controller
             'user' => $user,
         ]);
     }
+
+    public function updateSpecificValues(Request $request, $id)
+    {
+        $usuario = Usuario::findOrFail($id);
+
+        // Valida la solicitud
+        $validatedData = $request->validate([
+            'nombre_de_usuario' => 'sometimes|required|string|max:100|unique:usuarios,nombre_de_usuario,' . $usuario->id,
+            'correo' => 'sometimes|required|string|email|max:100|unique:usuarios,correo,' . $usuario->id,
+            'current_pass' => 'sometimes|required|string',
+            'nombre' => 'sometimes|required|string|max:30',
+            'apellido' => 'sometimes|required|string|max:30',
+            'fecha_nacimiento' => 'sometimes|required|date',
+        ]);
+
+        // Verifica la contraseña actual si se está actualizando el correo o la contraseña
+        if (isset($validatedData['correo']) || isset($request->pass)) {
+            if (!Hash::check($request->current_pass, $usuario->pass)) {
+                return response()->json(['error' => 'Contraseña actual incorrecta'], 400);
+            }
+        }
+
+        // Actualiza los valores permitidos
+        if (isset($validatedData['nombre_de_usuario'])) {
+            $usuario->nombre_de_usuario = $validatedData['nombre_de_usuario'];
+        }
+        if (isset($validatedData['correo'])) {
+            $usuario->correo = $validatedData['correo'];
+        }
+        if (isset($request->pass)) {
+            $usuario->pass = bcrypt($request->pass);
+        }
+        if (isset($validatedData['nombre'])) {
+            $usuario->nombre = $validatedData['nombre'];
+        }
+        if (isset($validatedData['apellido'])) {
+            $usuario->apellido = $validatedData['apellido'];
+        }
+        if (isset($validatedData['fecha_nacimiento'])) {
+            $usuario->fecha_nacimiento = $validatedData['fecha_nacimiento'];
+        }
+
+        // Guarda los cambios
+        $usuario->save();
+
+        return new UsuariosResource($usuario);
+    }
+
 }

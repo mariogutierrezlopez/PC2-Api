@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JugadorController;
 use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\GestionUsuarioController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\JugadoresPosesionController;
 use App\Http\Controllers\PrediJugadorController;
@@ -25,6 +26,14 @@ Route::get('ranking-jugadores', [PrediJugadorController::class, 'topJugadores'])
 
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
+
 Route::group(['middleware' => 'auth:api'], function() {
     Route::get('datos_usuario', [UsuarioController::class, 'getUserIdFromToken']);
 });
+
+Route::middleware('auth:api')->group(function () {
+    Route::put('usuarios/update-values/{id}', [UsuarioController::class, 'updateSpecificValues']);
+});
+
+Route::get('GestionaUsuario', [GestionUsuarioController::class, 'index']);
+Route::put('GestionaUsuario/{id}', [GestionUsuarioController::class, 'update']);
