@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JugadoresPosesion;
 use Illuminate\Http\Request;
 use App\Http\Resources\JugadoresPosesionResource;
+use Illuminate\Support\Facades\DB;
 
 class JugadoresPosesionController extends Controller
 {
@@ -71,6 +72,33 @@ class JugadoresPosesionController extends Controller
         } else {
             return response()->json(['error' => 'JugadoresPosesion no encontrado'], 404);
         }
+    }
+
+    public function actualizarJugadores(Request $request)
+    {
+        $request->validate([
+            'id_usuario' => 'required|integer',
+            'jugadores' => 'required|array|min:11|max:11',
+            'jugadores.*' => 'required|integer'
+        ]);
+
+        $idUsuario = $request->input('id_usuario');
+        $jugadores = $request->input('jugadores');
+
+        DB::transaction(function () use ($idUsuario, $jugadores) {
+            // Eliminar jugadores actuales del usuario
+            JugadoresPosesion::where('id_usuario', $idUsuario)->delete();
+
+            // Insertar nuevos jugadores
+            foreach ($jugadores as $idJugador) {
+                JugadoresPosesion::create([
+                    'id_usuario' => $idUsuario,
+                    'id_jugador' => $idJugador,
+                ]);
+            }
+        });
+
+        return response()->json(['message' => 'Jugadores actualizados correctamente'], 200);
     }
 
 }

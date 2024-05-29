@@ -37,3 +37,5 @@ Route::middleware('auth:api')->group(function () {
 
 Route::get('GestionaUsuario', [GestionUsuarioController::class, 'index']);
 Route::put('GestionaUsuario/{id}', [GestionUsuarioController::class, 'update']);
+
+Route::post('/actualizar-jugadores', [JugadoresPosesionController::class, 'actualizarJugadores']);
