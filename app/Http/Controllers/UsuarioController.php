@@ -98,6 +98,7 @@ class UsuarioController extends Controller
             'nombre_de_usuario' => 'sometimes|required|string|max:100|unique:usuarios,nombre_de_usuario,' . $usuario->id,
             'correo' => 'sometimes|required|string|email|max:100|unique:usuarios,correo,' . $usuario->id,
             'current_pass' => 'sometimes|required|string',
+            'new_pass' => 'sometimes|required|string|min:6',
             'nombre' => 'sometimes|required|string|max:30',
             'apellido' => 'sometimes|required|string|max:30',
             'fecha_nacimiento' => 'sometimes|required|date',
