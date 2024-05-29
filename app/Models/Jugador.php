@@ -22,6 +22,8 @@ class Jugador extends Model
         'nombre_del_jugador', 
         'id_equipo', 
         'posicion', 
+        'prediPrecio',
+        'prediPuntuacion',
     ];
 
     //RELACIONES DE TABLAS
@@ -33,6 +35,11 @@ class Jugador extends Model
     public function predijugadores()
     {
         return $this->hasMany(Predijugador::class, 'id_jugador');
+    }
+
+    public function prediPrecio()
+    {
+        return $this->hasOne(PrediPrecio::class, 'id_jugador');
     }
 }
 

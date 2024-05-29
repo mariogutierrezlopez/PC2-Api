@@ -20,5 +20,10 @@ class Equipo extends Model
         'nombre_equipo',
     ];
 
+    public function jugadores()
+    {
+        return $this->hasMany(Jugador::class, 'id_equipo', 'id');
+    }
+
 }
 
