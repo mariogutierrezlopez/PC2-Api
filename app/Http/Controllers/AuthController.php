@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -26,10 +27,15 @@ class AuthController extends Controller
             'password' => $request->input('pass'),
         ];
 
+        Log::info('Intentando autentificacion con credenciales: ', $credentials);
+
         // Intentar autenticar al usuario
         if (!$token = Auth::guard('api')->attempt($credentials)) {
+            Log::info('Autentificacion fallida: '. $credentials['correo']);
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+        
+        Log::info('Autentificacion exitosa: ' . $credentials['correo']);
 
         return response()->json([
             'access_token' => $token,

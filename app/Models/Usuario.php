@@ -31,7 +31,8 @@ class Usuario extends Authenticatable implements JWTSubject
         'pass',
         'nombre', 
         'apellido', 
-        'fecha_nacimiento', 
+        'fecha_nacimiento',
+        'role', 
     ];
 
     // Si deseas ocultar datos sensibles cuando se convierte el modelo a array o JSON
@@ -65,7 +66,7 @@ class Usuario extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            'user_id' => $this->id,
+            'role' => $this->role,
         ];
     }
 }
