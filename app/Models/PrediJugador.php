@@ -22,4 +22,9 @@ class PrediJugador extends Model
     {
         return $this->belongsTo(Jugador::class, 'id_jugador');
     }
+
+    public function prediPrecio()
+    {
+        return $this->hasOne(PrediPrecio::class, 'id_jugador', 'id_jugador');
+    }
 }

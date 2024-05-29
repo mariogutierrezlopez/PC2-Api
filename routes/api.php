@@ -11,6 +11,7 @@ use App\Http\Controllers\JugadoresPosesionController;
 use App\Http\Controllers\PrediJugadorController;
 use App\Http\Controllers\SoporteTecnicoController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\PrediPrecioController;
 
 // Rutas para la gestión
 Route::apiResource('jugadores', JugadorController::class);
@@ -22,6 +23,7 @@ Route::apiResource('usuarios', UsuarioController::class);
 Route::post('soporte_tecnico', [SoporteTecnicoController::class, 'store']);
 Route::get('soporte_tecnico', [SoporteTecnicoController::class, 'index']);
 
+Route::get('/prediprecios/{id}', [PrediPrecioController::class, 'show']);
 Route::get('ranking-jugadores', [PrediJugadorController::class, 'topJugadores']);
 
 Route::post('auth/login', [AuthController::class, 'login']);
