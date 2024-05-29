@@ -11,8 +11,22 @@ class JugadorController extends Controller
     // Obtener todos los jugadores
     public function index()
     {
-        return JugadorResource::collection(Jugador::all());
+    // Obtener todos los jugadores con la relación de equipo
+    $jugadores = Jugador::with(['equipo:id,id_web'])->get();
+
+    // Mapear los datos para incluir el id_web del equipo en el jugador
+    $jugadores = $jugadores->map(function($jugador) {
+        $jugador->equipo_id_web = $jugador->equipo ? $jugador->equipo->id_web : null;
+
+        // Eliminar la relación equipo para no duplicar datos innecesarios
+        unset($jugador->equipo);
+
+        return $jugador;
+    });
+
+    return JugadorResource::collection($jugadores);
     }
+
 
     public function rankingJugadores()
     {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JugadoresPosesion;
 use Illuminate\Http\Request;
 use App\Http\Resources\JugadoresPosesionResource;
+use App\Models\Equipo;
 use App\Models\Jugador;
 use App\Models\PrediJugador;
 use App\Models\PrediPrecio;
@@ -104,7 +105,6 @@ class JugadoresPosesionController extends Controller
 
         return response()->json(['message' => 'Jugadores actualizados correctamente'], 200);
     }
-
     public function getJugadoresPosesion(Request $request)
     {
         // Obtener el usuario autenticado a partir del token
@@ -120,19 +120,30 @@ class JugadoresPosesionController extends Controller
             ->get();
     
         // Obtener los detalles de los jugadores y los últimos valores de prediJugador y PrediPrecio
-        $jugadores = Jugador::whereIn('id', $jugadoresPosesion->pluck('id_jugador'))->get()->map(function($jugador) {
-            // Obtener el último valor de prediJugador para este jugador
-            $ultimoPrediJugador = PrediJugador::where('id_jugador', $jugador->id)->orderBy('id', 'desc')->first();
-            
-            // Obtener el último valor de PrediPrecio para este jugador
-            $ultimoPrediPrecio = PrediPrecio::where('id_jugador', $jugador->id)->orderBy('id', 'desc')->first();
-            
-            // Añadir estos valores a los detalles del jugador
-            $jugador->ultimoPrediJugador = $ultimoPrediJugador;
-            $jugador->ultimoPrediPrecio = $ultimoPrediPrecio;
-            
-            return $jugador;
-        });
+        $jugadores = Jugador::whereIn('id', $jugadoresPosesion->pluck('id_jugador'))
+            ->with(['equipo' => function($query) {
+                $query->select('id', 'id_web');
+            }])
+            ->get()
+            ->map(function($jugador) {
+                // Obtener el último valor de prediJugador para este jugador
+                $ultimoPrediJugador = prediJugador::where('id_jugador', $jugador->id)->orderBy('id', 'desc')->first();
+                
+                // Obtener el último valor de PrediPrecio para este jugador
+                $ultimoPrediPrecio = PrediPrecio::where('id_jugador', $jugador->id)->orderBy('id', 'desc')->first();
+                
+                // Añadir estos valores a los detalles del jugador
+                $jugador->ultimoPrediJugador = $ultimoPrediJugador;
+                $jugador->ultimoPrediPrecio = $ultimoPrediPrecio;
+                
+                // Añadir el id_web del equipo
+                $jugador->equipo_id_web = $jugador->equipo ? $jugador->equipo->id_web : null;
+                
+                // Eliminar la relación equipo para no duplicar datos innecesarios
+                unset($jugador->equipo);
+                
+                return $jugador;
+            });
     
         return response()->json($jugadores, 200);
     }
