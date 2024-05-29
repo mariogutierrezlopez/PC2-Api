@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\JugadoresPosesion;
 use Illuminate\Http\Request;
 use App\Http\Resources\JugadoresPosesionResource;
+use App\Models\Jugador;
+use App\Models\PrediJugador;
+use App\Models\PrediPrecio;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class JugadoresPosesionController extends Controller
@@ -99,6 +103,38 @@ class JugadoresPosesionController extends Controller
         });
 
         return response()->json(['message' => 'Jugadores actualizados correctamente'], 200);
+    }
+
+    public function getJugadoresPosesion(Request $request)
+    {
+        // Obtener el usuario autenticado a partir del token
+        $user = Auth::user();
+    
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no autenticado'], 401);
+        }
+    
+        // Obtener los jugadores asociados al usuario
+        $jugadoresPosesion = JugadoresPosesion::where('id_usuario', $user->id)
+            ->limit(11) // Asegurarse de que solo se obtengan 11 jugadores
+            ->get();
+    
+        // Obtener los detalles de los jugadores y los últimos valores de prediJugador y PrediPrecio
+        $jugadores = Jugador::whereIn('id', $jugadoresPosesion->pluck('id_jugador'))->get()->map(function($jugador) {
+            // Obtener el último valor de prediJugador para este jugador
+            $ultimoPrediJugador = PrediJugador::where('id_jugador', $jugador->id)->orderBy('id', 'desc')->first();
+            
+            // Obtener el último valor de PrediPrecio para este jugador
+            $ultimoPrediPrecio = PrediPrecio::where('id_jugador', $jugador->id)->orderBy('id', 'desc')->first();
+            
+            // Añadir estos valores a los detalles del jugador
+            $jugador->ultimoPrediJugador = $ultimoPrediJugador;
+            $jugador->ultimoPrediPrecio = $ultimoPrediPrecio;
+            
+            return $jugador;
+        });
+    
+        return response()->json($jugadores, 200);
     }
 
 }
