@@ -26,7 +26,6 @@ class Jugador extends Model
         'prediPuntuacion',
     ];
 
-    //RELACIONES DE TABLAS
     public function equipo()
     {
         return $this->belongsTo(Equipo::class, 'id_equipo');
