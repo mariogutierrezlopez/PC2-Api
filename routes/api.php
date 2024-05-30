@@ -13,6 +13,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PrediPrecioController;
 use App\Http\Middleware\CheckAdminRole;
 use Tymon\JWTAuth\Http\Middleware\Authenticate;
+use App\Http\Controllers\AdminController;
 
 // Rutas públicas
 Route::post('auth/login', [AuthController::class, 'login']);
@@ -28,6 +29,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/prediprecios/{id}', [PrediPrecioController::class, 'show']);
     Route::post('/actualizar-jugadores', [JugadoresPosesionController::class, 'actualizarJugadores']);
     Route::get('/jugadores-posesion', [JugadoresPosesionController::class, 'getJugadoresPosesion']);
+    Route::get('/user-role', [AuthController::class, 'getUserRole']);
 });
 
 // Rutas protegidas para administradores

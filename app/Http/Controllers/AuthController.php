@@ -81,4 +81,9 @@ class AuthController extends Controller
             'expires_in' => auth('api')->factory()->getTTL() * 60,
         ], 201);
     }
+    public function getUserRole(Request $request)
+    {
+        $user = Auth::user();
+        return response()->json(['role' => $user->rol]);
+    }
 }

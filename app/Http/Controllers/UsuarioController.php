@@ -6,6 +6,7 @@ use App\Models\Usuario; // Asegúrate de que el modelo Usuario corresponde a tu 
 use App\Http\Resources\UsuariosResource;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 class UsuarioController extends Controller
 {
