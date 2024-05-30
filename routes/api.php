@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('jornadas', JornadaController::class);
     Route::apiResource('jugadores_en_posesion', JugadoresPosesionController::class);
     Route::get('ranking-jugadores', [PrediJugadorController::class, 'topJugadores']);
+    Route::get('jugadores-aleatorios/{cantidad}', [PrediJugadorController::class, 'jugadoresAleatorios']);
     Route::get('/prediprecios/{id}', [PrediPrecioController::class, 'show']);
     Route::post('/actualizar-jugadores', [JugadoresPosesionController::class, 'actualizarJugadores']);
     Route::get('/jugadores-posesion', [JugadoresPosesionController::class, 'getJugadoresPosesion']);

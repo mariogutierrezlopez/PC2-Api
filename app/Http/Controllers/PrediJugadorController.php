@@ -33,4 +33,30 @@ class PrediJugadorController extends Controller
 
         return response()->json($topJugadores);
     }
+
+    public function jugadoresAleatorios($cantidad)
+    {
+        $ultimaJornada = PrediJugador::selectRaw("MAX(CAST(REPLACE(jornada, 'J', '') AS UNSIGNED)) as max_jornada")
+                            ->value('max_jornada');
+
+        $jugadoresAleatorios = PrediJugador::with(['jugador', 'jugador.prediPrecio'])
+                                ->whereRaw("CAST(REPLACE(jornada, 'J', '') AS UNSIGNED) = ?", [$ultimaJornada])
+                                ->inRandomOrder()
+                                ->limit($cantidad)
+                                ->get()
+                                ->map(function($predijugador) {
+                                    $prediPrecio = PrediPrecio::where('id_jugador', $predijugador->jugador->id_web)->first();
+                                    return [
+                                        'id_jugador' => $predijugador->jugador->id_web,
+                                        'jornada' => $predijugador->jornada,
+                                        'puntos_jornada' => $predijugador->puntos_jornada ?? 0,
+                                        'nombre_del_jugador' => $predijugador->jugador->nombre_del_jugador ?? '',
+                                        'puntos_jornada_prediccion' => $predijugador->jugador->prediPuntuacion ?? 0,
+                                        'precio_jugador' => number_format($predijugador->prediPrecio->precio ?? 0, 0, ',', '.') . ' €',
+                                        'prediccion_precio_jugador' => number_format($predijugador->jugador->prediPrecio ?? 0, 0, ',', '.') . ' €',
+                                    ];
+                                });
+
+        return response()->json($jugadoresAleatorios);
+    }
 }
